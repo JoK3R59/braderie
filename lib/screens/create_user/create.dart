@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -12,6 +13,27 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
+  Future<void> create(email, password) async {
+
+    final response = await http.post(
+      Uri.parse('http://192.168.1.17:3000/create'),
+      body: {
+        'email': email,
+        'password': password,
+      },
+    );
+
+    if (response.statusCode == 201) {
+      _navigateToLogin();
+    } else {
+      print('Erreur de connexion /!\\');
+    }
+  }
+
+  _navigateToLogin() {
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +44,7 @@ class _SignUpPageState extends State<SignUpPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -49,18 +71,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 final String confirmPassword = _confirmPasswordController.text;
 
                 if (password == confirmPassword) {
-                  // Les mots de passe correspondent, continuez avec la création du compte
-                  // Vous pouvez envoyer ces informations au serveur pour créer le compte
-                  // Assurez-vous de gérer les erreurs et les succès de manière appropriée
+                  create(email, password);
                 } else {
-                  // Les mots de passe ne correspondent pas, affichez une erreur
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text('Erreur'),
                         content: const Text('Les mots de passe ne correspondent pas.'),
-                        actions: <Widget>[
+                        actions: [
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
