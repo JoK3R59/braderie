@@ -24,14 +24,54 @@ class _SignUpPageState extends State<SignUpPage> {
     );
 
     if (response.statusCode == 201) {
-      _navigateToLogin();
-    } else {
+      showDialogSuccessNewUser();
+    } else if (response.statusCode == 409) {
+      showDialogErrorNewUser();
+    }
+    else {
       print('Erreur de connexion /!\\');
     }
   }
 
-  _navigateToLogin() {
-    Navigator.pushReplacementNamed(context, '/login');
+  showDialogSuccessNewUser() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Succès'),
+          content: const Text('Compte utilisateur créé avec succès.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  showDialogErrorNewUser() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Erreur'),
+          content: const Text('Utilisateur déjà existant.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
