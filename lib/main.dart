@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// Screens
+import 'screens/create_user/create.dart';
 import 'screens/home/home.dart';
 import 'screens/splash/splash.dart';
 import 'screens/login/login.dart';
@@ -24,6 +26,8 @@ class MyApp extends StatelessWidget {
             (context) => const HomePage(title: 'Flutter Demo Home Page'),
         '/login':
             (context) => const LoginPage(),
+        '/create':
+            (context) => const SignUpPage(),
       },
     );
   }
