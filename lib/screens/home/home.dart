@@ -1,47 +1,90 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-  final String title;
+import '../../models/storage_item.dart';
+import '../../services/storage.dart';
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
+class HomePage extends StatelessWidget {
+  HomePage({Key? key}) : super(key: key);
 
-class _HomePageState extends State<HomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  final StorageService storageService = StorageService();
 
   @override
   Widget build(BuildContext context) {
+    final Future<List<Storage>> storageItemsFuture = storageService.fetchStorages('6514067ec222466b51d437d3');
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text('Accueil'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      body: FutureBuilder<List<Storage>>(
+        key: key,
+        future: storageItemsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            // Affichez un indicateur de chargement en attendant les données
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            // Gérez les erreurs ici (par exemple, affichez un message d'erreur)
+            return Center(
+              child: Text('Erreur : ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            // Gérez le cas où aucune donnée n'est disponible
+            return const Center(
+              child: Text('Aucune donnée disponible.'),
+            );
+          } else {
+            // Affichez les données récupérées ici
+            final List<Storage> storageItems = snapshot.data!;
+            print(storageItems);
+            return Column(
+              key: key,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.grey,
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                  child: const Text(
+                    'En-tête de la page d\'accueil',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                /*
+                Expanded(
+                  child: ListView.builder(
+                    key: key,
+                    itemCount: storageItems.length,
+                    itemBuilder: (context, index) {
+                      final item = storageItems[index];
+                      return ListTile(
+                        leading: Image.network(item.photo),
+                        title: Text(item.name),
+                        subtitle: Text('Prix: \$${item.price.toStringAsFixed(2)}'),
+                        trailing: Text('Quantité: ${item.quantity}'),
+                        onTap: () {
+                          // Gérer le tap sur un élément de stockage ici
+                          // Par exemple, naviguer vers une page de détails de stockage
+                        },
+                      );
+                    },
+                  ),
+                ),
+                */
+              ],
+            );
+          }
+        },
       ),
     );
   }

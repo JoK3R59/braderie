@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../services/login.dart';
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -12,26 +14,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-
-  Future<void> create(email, password) async {
-
-    final response = await http.post(
-      Uri.parse('http://192.168.1.17:3000/create'),
-      body: {
-        'email': email,
-        'password': password,
-      },
-    );
-
-    if (response.statusCode == 201) {
-      showDialogSuccessNewUser();
-    } else if (response.statusCode == 409) {
-      showDialogErrorNewUser();
-    }
-    else {
-      print('Erreur de connexion /!\\');
-    }
-  }
+  
+  final AuthService _authService = AuthService();
 
   showDialogSuccessNewUser() {
     showDialog(
@@ -43,8 +27,7 @@ class _SignUpPageState extends State<SignUpPage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacementNamed(context, '/login');
+                Navigator.of(context).popUntil((route) => route.isFirst);
               },
               child: const Text('OK'),
             ),
@@ -104,14 +87,21 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             const SizedBox(height: 32.0),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 // Placez ici votre logique pour créer le compte utilisateur
                 final String email = _emailController.text;
                 final String password = _passwordController.text;
                 final String confirmPassword = _confirmPasswordController.text;
 
                 if (password == confirmPassword) {
-                  create(email, password);
+                  dynamic number = await _authService.createUser(email, password);
+                  if (number == 1) {
+                    showDialogSuccessNewUser();
+                  } else if (number == 2) {
+                    showDialogErrorNewUser();
+                  } else {
+                    print('Erreur de connexion /!\\');
+                  }
                 } else {
                   showDialog(
                     context: context,

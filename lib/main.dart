@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       home: const SplashScreen(),
       routes: {
         '/home':
-            (context) => const HomePage(title: 'Flutter Demo Home Page'),
+            (context) => HomePage(),
         '/login':
             (context) => const LoginPage(),
         '/create':

@@ -8,6 +8,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -32,11 +33,13 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text("Chargement..."),
+            const SizedBox(height: 32),
             Image.asset(
               'assets/images/splash_screen/joker.png',
-              width: width,
+              width: width / 2,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
             const CircularProgressIndicator(),
           ],
         ),

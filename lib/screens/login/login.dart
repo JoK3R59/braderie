@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+
+import '../../services/login.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,24 +13,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  Future<void> login() async {
-    final String email = usernameController.text;
-    final String password = passwordController.text;
-
-    final response = await http.post(
-      Uri.parse('http://192.168.1.17:3000/login'),
-      body: {
-        'email': email,
-        'password': password,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      _navigateToHome();
-    } else {
-      print('Erreur de connexion /!\\');
-    }
-  }
+  final AuthService _authService = AuthService();
 
   _navigateToHome() {
     Navigator.pushReplacementNamed(context, '/home');
@@ -61,7 +45,18 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: login,
+              onPressed: () {
+                _authService.loginUser(
+                  usernameController.text,
+                  passwordController.text,
+                ).then((value) {
+                  if (value) {
+                    _navigateToHome();
+                  } else {
+                    print('Erreur de connexion /!\\');
+                  }
+                });
+              },
               child: const Text('Se connecter'),
             ),
             const SizedBox(height: 20.0),
