@@ -10,17 +10,15 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Future<List<Storage>> storageItemsFuture = storageService.fetchStorages('6514067ec222466b51d437d3');
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Accueil'),
       ),
-      body: FutureBuilder<List<Storage>>(
-        key: key,
-        future: storageItemsFuture,
+      body: FutureBuilder<Storage>(
+        future: storageService.fetchStorage('65159249cf4854b312a7cce9'),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          print(snapshot);
+          if (snapshot.connectionState == ConnectionState.waiting) {
             // Affichez un indicateur de chargement en attendant les données
             return const Center(
               child: CircularProgressIndicator(),
@@ -30,17 +28,18 @@ class HomePage extends StatelessWidget {
             return Center(
               child: Text('Erreur : ${snapshot.error}'),
             );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData) {
             // Gérez le cas où aucune donnée n'est disponible
             return const Center(
               child: Text('Aucune donnée disponible.'),
             );
           } else {
             // Affichez les données récupérées ici
-            final List<Storage> storageItems = snapshot.data!;
-            print(storageItems);
+            final Storage storage = snapshot.data!;
+            print('STORAGE : ${storage}');
+            final List<StorageItem> storageItems = storage.storedObjects;
+            print('STORAGE ITEMS : ${storageItems}');
             return Column(
-              key: key,
               children: [
                 Container(
                   padding: const EdgeInsets.all(16.0),
@@ -60,18 +59,15 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                /*
                 Expanded(
                   child: ListView.builder(
-                    key: key,
                     itemCount: storageItems.length,
                     itemBuilder: (context, index) {
                       final item = storageItems[index];
                       return ListTile(
-                        leading: Image.network(item.photo),
                         title: Text(item.name),
-                        subtitle: Text('Prix: \$${item.price.toStringAsFixed(2)}'),
-                        trailing: Text('Quantité: ${item.quantity}'),
+                        subtitle: Text(
+                            'Prix: \$${item.price.toStringAsFixed(2)}'),
                         onTap: () {
                           // Gérer le tap sur un élément de stockage ici
                           // Par exemple, naviguer vers une page de détails de stockage
@@ -80,7 +76,6 @@ class HomePage extends StatelessWidget {
                     },
                   ),
                 ),
-                */
               ],
             );
           }

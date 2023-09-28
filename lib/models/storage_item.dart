@@ -19,7 +19,7 @@ class StorageItem {
   factory StorageItem.fromJson(Map<String, dynamic> json) {
     return StorageItem(
       name: json['name'] ?? '',
-      price: (json['price'] as num).toDouble(),
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
       quantity: json['quantity'] as int,
       description: json['description'] ?? '',
       condition: json['condition'] ?? 'Usé',
@@ -35,7 +35,7 @@ class Storage {
   final List<StorageItem> storedObjects;
 
   Storage({
-    required this.userId,
+    this.userId = '',
     this.storageName = '',
     this.storageCapacity = 0,
     this.storedObjects = const [],
