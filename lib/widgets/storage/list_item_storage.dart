@@ -5,10 +5,20 @@ import '../../screens/item_storage/storage.dart';
 import '../../services/storage.dart';
 import '../option_icon/option_icon.dart';
 
-class ListItemStorage extends StatelessWidget {
-  ListItemStorage({Key? key}) : super(key: key);
+class ListItemStorage extends StatefulWidget {
+  const ListItemStorage({Key? key}) : super(key: key);
 
+  @override
+  ListItemStorageState createState() => ListItemStorageState();
+}
+
+class ListItemStorageState extends State<ListItemStorage> {
   final StorageService storageService = StorageService();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +83,11 @@ class ListItemStorage extends StatelessWidget {
                       children: [
                         ListTile(
                           title: Text(item.name),
-                          subtitle: Text(
-                              'Prix: \$${item.price.toStringAsFixed(2)}'),
-                          trailing: const OptionsIcons(),
+                          subtitle:
+                              Text('Prix: \$${item.price.toStringAsFixed(2)}'),
+                          trailing: OptionsIcons(
+                              item: item.id,
+                              storageService: storageService),
                           onTap: () {
                             Navigator.push(
                               context,

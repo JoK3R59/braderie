@@ -1,4 +1,5 @@
 class StorageItem {
+  final String id;
   final String name;
   final double price;
   final int quantity;
@@ -7,6 +8,7 @@ class StorageItem {
   final String photo;
 
   StorageItem({
+    required this.id,
     required this.name,
     required this.price,
     required this.quantity,
@@ -18,6 +20,7 @@ class StorageItem {
   // Méthode pour créer une instance depuis JSON
   factory StorageItem.fromJson(Map<String, dynamic> json) {
     return StorageItem(
+      id: json['_id'] ?? '',
       name: json['name'] ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
       quantity: json['quantity'] as int,

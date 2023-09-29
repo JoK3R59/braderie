@@ -29,7 +29,7 @@ class StorageItemDetailPage extends StatelessWidget {
             Image.network(
               storageItem.photo,
               height: 200.0, // Ajustez la hauteur selon vos besoins
-              width: double.infinity, // Utilisez toute la largeur disponible
+              width: 200, // Utilisez toute la largeur disponible
               fit: BoxFit.cover, // Ajustez l'image pour couvrir la zone
             ),
             const SizedBox(height: 16.0),

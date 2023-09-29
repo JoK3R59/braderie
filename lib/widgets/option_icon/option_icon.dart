@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 
+import '../../services/storage.dart';
+
 class OptionsIcons extends StatefulWidget {
-  const OptionsIcons({Key? key}) : super(key: key);
+  final String item;
+  final StorageService storageService;
+
+  const OptionsIcons({
+    Key? key,
+    required this.item,
+    required this.storageService,
+  }) : super(key: key);
 
   @override
-  OptionsIconsState createState() => OptionsIconsState();
+  State<OptionsIcons> createState() => OptionsIconsState();
 }
+
 class OptionsIconsState extends State<OptionsIcons> {
   bool isOptionsVisible = false;
+  late final String item;
 
   toggleOptionsVisibility() {
-    print("toggleOptionsVisibility");
     setState(() {
       isOptionsVisible = !isOptionsVisible;
     });
@@ -18,7 +28,6 @@ class OptionsIconsState extends State<OptionsIcons> {
 
   @override
   Widget build(BuildContext context) {
-    print("build OPTIONSICONS");
     return AnimatedCrossFade(
       key: const ValueKey('optionsIcons'),
       firstChild: IconButton(
@@ -49,6 +58,8 @@ class OptionsIconsState extends State<OptionsIcons> {
             onPressed: () {
               // Action à effectuer lors de la suppression de l'élément
               // Par exemple, afficher une boîte de dialogue de confirmation
+              print("delete item : ${widget.item}");
+              widget.storageService.deleteStorageItem(widget.item);
             },
           ),
         ],

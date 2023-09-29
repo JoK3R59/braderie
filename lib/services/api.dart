@@ -26,7 +26,8 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> postData(
-      String endpoint, Map<String, dynamic> body) async {
+      String endpoint, Map<String, dynamic> body
+      ) async {
     String? authToken = await storage.read(key: 'authToken');
     final response = await http.post(
       Uri.parse('$baseUrl/$endpoint'),
@@ -44,4 +45,25 @@ class ApiService {
       throw Exception('Failed to send data');
     }
   }
+
+  // deleteData
+  Future<bool> deleteData(String endpoint, String objectId) async {
+    String? authToken = await storage.read(key: 'authToken');
+    String? authUser = await storage.read(key: 'userId');
+    final response = await http.delete(
+      Uri.parse('$baseUrl/$endpoint/$authUser/$objectId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Deleted data successfully');
+      return true;
+    } else {
+      throw Exception('Failed to delete data');
+    }
+  }
+
 }
