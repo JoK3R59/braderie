@@ -4,9 +4,9 @@ import 'api.dart';
 class StorageService {
   final ApiService _apiService = ApiService();
 
-  Future<Storage> fetchStorage(String userId) async {
+  Future<Storage> fetchStorage() async {
     try {
-      final response = await _apiService.fetchData('storage/$userId');
+      final response = await _apiService.fetchData('storage');
 
       if (response.isNotEmpty) {
         final Storage storage = Storage.fromJson(response);
@@ -16,7 +16,6 @@ class StorageService {
         return Storage(); // Ou renvoyez null ou un autre objet par défaut
       }
     } catch (e) {
-      print('StorageService - Erreur de connexion: $e');
       return Storage(); // Ou renvoyez null ou un autre objet par défaut
     }
   }

@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'api.dart';
 
@@ -15,6 +16,8 @@ class AuthService {
 
       if (response['token'] != null) {
         await storage.write(key: 'authToken', value: response['token']);
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(response['token']);
+        await storage.write(key: 'userId', value: decodedToken['id']);
         return true;
       } else {
         return false;

@@ -8,8 +8,9 @@ class ApiService {
 
   Future<Map<String, dynamic>> fetchData(String endpoint) async {
     String? authToken = await storage.read(key: 'authToken');
+    String? authUser = await storage.read(key: 'userId');
     final response = await http.get(
-      Uri.parse('$baseUrl/$endpoint'),
+      Uri.parse('$baseUrl/$endpoint/$authUser'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $authToken',
@@ -24,7 +25,8 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> postData(String endpoint, Map<String, dynamic> body) async {
+  Future<Map<String, dynamic>> postData(
+      String endpoint, Map<String, dynamic> body) async {
     String? authToken = await storage.read(key: 'authToken');
     final response = await http.post(
       Uri.parse('$baseUrl/$endpoint'),

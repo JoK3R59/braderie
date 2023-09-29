@@ -2,22 +2,37 @@ import 'package:flutter/material.dart';
 
 import '../../models/storage_item.dart';
 import '../../services/storage.dart';
+import '../../widgets/option_icon/option_icon.dart';
+import '../item_storage/storage.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final StorageService storageService = StorageService();
+  bool isOptionsVisible = false;
+
+  toggleOptionsVisibility() {
+    print("toggleOptionsVisibility");
+    setState(() {
+      isOptionsVisible = !isOptionsVisible;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("build HOMEPAGE");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Accueil'),
       ),
       body: FutureBuilder<Storage>(
-        future: storageService.fetchStorage('65159249cf4854b312a7cce9'),
+        future: storageService.fetchStorage(),
         builder: (context, snapshot) {
-          print(snapshot);
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Affichez un indicateur de chargement en attendant les données
             return const Center(
@@ -36,9 +51,7 @@ class HomePage extends StatelessWidget {
           } else {
             // Affichez les données récupérées ici
             final Storage storage = snapshot.data!;
-            print('STORAGE : ${storage}');
             final List<StorageItem> storageItems = storage.storedObjects;
-            print('STORAGE ITEMS : ${storageItems}');
             return Column(
               children: [
                 Container(
@@ -51,12 +64,22 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  child: const Text(
-                    'En-tête de la page d\'accueil',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Bienvenue, ${storage.userName}',
+                        style: const TextStyle(
+                          fontSize: 32.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Quantité de votre inventaire: ${storage.storageCapacity.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
@@ -64,14 +87,34 @@ class HomePage extends StatelessWidget {
                     itemCount: storageItems.length,
                     itemBuilder: (context, index) {
                       final item = storageItems[index];
-                      return ListTile(
-                        title: Text(item.name),
-                        subtitle: Text(
-                            'Prix: \$${item.price.toStringAsFixed(2)}'),
-                        onTap: () {
-                          // Gérer le tap sur un élément de stockage ici
-                          // Par exemple, naviguer vers une page de détails de stockage
-                        },
+                      return Column(
+                        children: [
+                          ListTile(
+                            title: Text(item.name),
+                            subtitle: Text(
+                                'Prix: \$${item.price.toStringAsFixed(2)}'),
+                            trailing: OptionsIcons(
+                              isOptionsVisible: isOptionsVisible,
+                              toggleOptionsVisibility: toggleOptionsVisibility,
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      StorageItemDetailPage(storageItem: item),
+                                ),
+                              );
+                            },
+                          ),
+                          const Divider(
+                            height: 6.0,
+                            color: Colors.blueGrey,
+                            indent: 32.0,
+                            endIndent: 32.0,
+                            thickness: 0.5,
+                          ), // Ajoute une ligne de séparation
+                        ],
                       );
                     },
                   ),

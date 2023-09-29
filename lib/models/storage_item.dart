@@ -30,12 +30,14 @@ class StorageItem {
 
 class Storage {
   final String userId;
+  final String userName;
   final String storageName;
   final double storageCapacity;
   final List<StorageItem> storedObjects;
 
   Storage({
     this.userId = '',
+    this.userName = '',
     this.storageName = '',
     this.storageCapacity = 0,
     this.storedObjects = const [],
@@ -45,10 +47,11 @@ class Storage {
   factory Storage.fromJson(Map<String, dynamic> json) {
     final List<dynamic> storedObjectsJson = json['storedObjects'] ?? [];
     final List<StorageItem> storedObjects =
-    storedObjectsJson.map((e) => StorageItem.fromJson(e)).toList();
+        storedObjectsJson.map((e) => StorageItem.fromJson(e)).toList();
 
     return Storage(
       userId: json['userId'] ?? '',
+      userName: json['userName'] ?? '',
       storageName: json['storageName'] ?? '',
       storageCapacity: (json['storageCapacity'] as num).toDouble(),
       storedObjects: storedObjects,
