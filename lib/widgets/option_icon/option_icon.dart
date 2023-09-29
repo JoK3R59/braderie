@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 
-class OptionsIcons extends StatelessWidget {
-  final bool isOptionsVisible;
-  final Function() toggleOptionsVisibility;
+class OptionsIcons extends StatefulWidget {
+  const OptionsIcons({Key? key}) : super(key: key);
 
-  const OptionsIcons({
-    required this.isOptionsVisible,
-    Key? key,
-    required this.toggleOptionsVisibility,
-  }) : super(key: key);
+  @override
+  OptionsIconsState createState() => OptionsIconsState();
+}
+class OptionsIconsState extends State<OptionsIcons> {
+  bool isOptionsVisible = false;
+
+  toggleOptionsVisibility() {
+    print("toggleOptionsVisibility");
+    setState(() {
+      isOptionsVisible = !isOptionsVisible;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
