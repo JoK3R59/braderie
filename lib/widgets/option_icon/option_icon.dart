@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../services/storage.dart';
@@ -19,11 +21,32 @@ class OptionsIcons extends StatefulWidget {
 class OptionsIconsState extends State<OptionsIcons> {
   bool isOptionsVisible = false;
   late final String item;
+  late Timer _resetTimer;
+
+  OptionsIconsState() {
+    _resetTimer = Timer(const Duration(seconds: 3), () {
+      setState(() {
+        isOptionsVisible = false;
+      });
+    });
+  }
 
   toggleOptionsVisibility() {
     setState(() {
       isOptionsVisible = !isOptionsVisible;
     });
+
+    // Réinitialiser le minuteur et programmer la réinitialisation
+    if (isOptionsVisible) {
+      _resetTimer.cancel();
+      _resetTimer = Timer(const Duration(seconds: 3), () {
+        setState(() {
+          isOptionsVisible = false;
+        });
+      });
+    } else {
+      _resetTimer.cancel();
+    }
   }
 
   @override
@@ -32,11 +55,7 @@ class OptionsIconsState extends State<OptionsIcons> {
       key: const ValueKey('optionsIcons'),
       firstChild: IconButton(
         icon: const Icon(Icons.more_vert),
-        // Icône d'options
         onPressed: () {
-          // Afficher les icônes de suppression et de modification
-          // Vous pouvez gérer la visibilité ici en fonction de l'état
-          // Par exemple, en utilisant un gestionnaire d'état global ou local.
           toggleOptionsVisibility();
         },
       ),
@@ -45,19 +64,13 @@ class OptionsIconsState extends State<OptionsIcons> {
         children: [
           IconButton(
             icon: const Icon(Icons.edit),
-            // Icône de modification
             onPressed: () {
-              // Action à effectuer lors de la modification de l'élément
-              // Par exemple, ouvrir une page de modification
               toggleOptionsVisibility();
             },
           ),
           IconButton(
             icon: const Icon(Icons.delete),
-            // Icône de suppression
             onPressed: () {
-              // Action à effectuer lors de la suppression de l'élément
-              // Par exemple, afficher une boîte de dialogue de confirmation
               print("delete item : ${widget.item}");
               widget.storageService.deleteStorageItem(widget.item);
             },
