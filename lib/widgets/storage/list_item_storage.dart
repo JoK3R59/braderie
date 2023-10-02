@@ -66,7 +66,7 @@ class ListItemStorageState extends State<ListItemStorage> {
                       ),
                     ),
                     Text(
-                      'Quantité de votre inventaire: ${storage.storageCapacity.toStringAsFixed(2)}',
+                      'Quantité de votre inventaire: ${storage.storedObjects.length.toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontSize: 16.0,
                       ),
@@ -86,8 +86,15 @@ class ListItemStorageState extends State<ListItemStorage> {
                           subtitle:
                               Text('Prix: \$${item.price.toStringAsFixed(2)}'),
                           trailing: OptionsIcons(
-                              item: item.id,
-                              storageService: storageService),
+                            item: item.id,
+                            onDelete: () {
+                              storageService.deleteStorageItem(item.id).then((_) {
+                                setState(() {
+                                  storageItems.removeAt(index);
+                                });
+                              });
+                            },
+                          ),
                           onTap: () {
                             Navigator.push(
                               context,

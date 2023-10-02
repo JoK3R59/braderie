@@ -5,6 +5,7 @@ class StorageService {
   final ApiService _apiService = ApiService();
 
   Future<Storage> fetchStorage() async {
+    print('fetchStorage - fetchStorage');
     try {
       final response = await _apiService.fetchData('storage');
 

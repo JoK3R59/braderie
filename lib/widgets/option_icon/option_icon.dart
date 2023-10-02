@@ -2,16 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../services/storage.dart';
-
 class OptionsIcons extends StatefulWidget {
   final String item;
-  final StorageService storageService;
+  final VoidCallback onDelete;
 
   const OptionsIcons({
     Key? key,
     required this.item,
-    required this.storageService,
+    required this.onDelete,
   }) : super(key: key);
 
   @override
@@ -36,17 +34,20 @@ class OptionsIconsState extends State<OptionsIcons> {
       isOptionsVisible = !isOptionsVisible;
     });
 
-    // Réinitialiser le minuteur et programmer la réinitialisation
     if (isOptionsVisible) {
-      _resetTimer.cancel();
-      _resetTimer = Timer(const Duration(seconds: 3), () {
-        setState(() {
-          isOptionsVisible = false;
-        });
-      });
+      resetTimer();
     } else {
       _resetTimer.cancel();
     }
+  }
+
+  resetTimer() {
+    _resetTimer.cancel();
+    _resetTimer = Timer(const Duration(seconds: 3), () {
+      setState(() {
+        isOptionsVisible = false;
+      });
+    });
   }
 
   @override
@@ -71,8 +72,33 @@ class OptionsIconsState extends State<OptionsIcons> {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () {
-              print("delete item : ${widget.item}");
-              widget.storageService.deleteStorageItem(widget.item);
+              _resetTimer.cancel();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("Confirmation"),
+                    content: const Text(
+                        "Êtes-vous sûr de vouloir supprimer cet élément ?"),
+                    actions: [
+                      TextButton(
+                        child: const Text("Annuler"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          resetTimer();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text("Supprimer"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          widget.onDelete();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
         ],
