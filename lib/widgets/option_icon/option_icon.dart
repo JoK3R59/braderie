@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 class OptionsIcons extends StatefulWidget {
   final String item;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
   const OptionsIcons({
     Key? key,
     required this.item,
     required this.onDelete,
+    required this.onEdit,
   }) : super(key: key);
 
   @override
@@ -66,7 +68,7 @@ class OptionsIconsState extends State<OptionsIcons> {
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {
-              toggleOptionsVisibility();
+              widget.onEdit();
             },
           ),
           IconButton(

@@ -94,6 +94,16 @@ class ListItemStorageState extends State<ListItemStorage> {
                                 });
                               });
                             },
+                            onEdit: () {
+                              print('Edit item');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      StorageItemDetailPage(storageItem: item,isEditMode: true),
+                                ),
+                              );
+                            },
                           ),
                           onTap: () {
                             Navigator.push(
